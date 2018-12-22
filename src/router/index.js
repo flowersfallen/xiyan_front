@@ -5,6 +5,9 @@ import Index from '@/components/Index'
 import List from '@/components/List'
 import Show from '@/components/Show'
 
+import axios from 'axios'
+Vue.prototype.$ajax = axios
+
 Vue.use(Router)
 
 export default new Router({

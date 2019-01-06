@@ -1,18 +1,25 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>虽然你我会下落不明，你知道我曾为你动过情。</p>
-    <ul>
-      <li>
-        <a href = '#/index'>首页</a>
-      </li>
-      <li>
-        <a href = '#/list'>列表</a>
-      </li>
-      <li>
-        <a href = '#/show'>详情</a>
-      </li>
-    </ul>
+  <div>
+    <sui-card  class="fluid">
+      <sui-card-content>
+        <sui-image src="https://semantic-ui.com/images/avatar2/large/kristy.png" shape="circular" size="mini"/>
+        Elliot
+        <sui-card-meta slot="right">14h</sui-card-meta>
+      </sui-card-content>
+      <sui-image src="https://semantic-ui.com/images/avatar2/large/kristy.png" />
+      <sui-card-content>
+        <span slot="right">
+          <sui-icon name="heart outline" /> 17 likes
+        </span>
+        <sui-icon name="comment" /> 3 comments
+      </sui-card-content>
+      <sui-card-content extra>
+        <sui-input placeholder="Add Comment" icon="heart outline" icon-position="left" transparent/>
+      </sui-card-content>
+    </sui-card>
+
+    <sui-divider />
+
   </div>
 </template>
 

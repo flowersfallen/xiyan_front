@@ -2,12 +2,7 @@
   <sui-segment>
     <sui-form>
       <sui-form-field>
-        <sui-dropdown
-          placeholder="选择话题"
-          selection
-          :options="options"
-          v-model="current"
-        />
+        <sui-dropdown placeholder="选择话题" selection :options="options" v-model="current"/>
       </sui-form-field>
       <sui-form-field>
         <textarea placeholder="描述" ></textarea>

@@ -2,14 +2,12 @@
   <sui-segment>
     <sui-form>
       <sui-form-field>
-        <label>标题</label>
-        <input placeholder="标题" >
+        <input placeholder="话题" >
       </sui-form-field>
       <sui-form-field>
-        <label>描述</label>
         <textarea placeholder="描述" ></textarea>
       </sui-form-field>
-      <sui-button type="submit">提交</sui-button>
+      <sui-button type="submit" class="fluid">提交</sui-button>
     </sui-form>
   </sui-segment>
 </template>

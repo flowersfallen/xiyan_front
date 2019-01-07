@@ -22,7 +22,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Post',
+      name: 'Home',
       component: Post
     },
     {

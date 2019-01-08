@@ -28,7 +28,6 @@ export default {
     return {
       email: '',
       password: '',
-      token: '',
       error: '',
       open: false
     }
@@ -48,8 +47,14 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.token = res.data.data.token
-            this.$router.push({ path: 'post' })
+            var token = res.data.data.token
+            this.$store.dispatch('refreshToken', token)
+            var redirect = this.$route.query.redirect
+            if (redirect) {
+              this.$router.push({ path: redirect })
+            } else {
+              this.$router.push({ path: 'user' })
+            }
           } else {
             this.error = res.data.error
             this.open = true

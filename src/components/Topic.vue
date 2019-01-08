@@ -19,24 +19,10 @@
 
     <sui-segment>
       <sui-list divided relaxed>
-        <sui-list-item>
+        <sui-list-item v-for="item in list" v-bind:item="item" v-bind:key="item.id">
           <sui-list-content>
-            <a is="sui-list-header">话题1</a>
-            <a is="sui-list-description">Updated 10 mins ago</a>
-          </sui-list-content>
-        </sui-list-item>
-
-        <sui-list-item>
-          <sui-list-content>
-            <a is="sui-list-header">话题1</a>
-            <a is="sui-list-description">Updated 10 mins ago</a>
-          </sui-list-content>
-        </sui-list-item>
-
-        <sui-list-item>
-          <sui-list-content>
-            <a is="sui-list-header">话题1</a>
-            <a is="sui-list-description">Updated 10 mins ago</a>
+            <a is="sui-list-header">{{ item.title }}</a>
+            <a is="sui-list-description">{{ item.created_at }}</a>
           </sui-list-content>
         </sui-list-item>
       </sui-list>
@@ -49,8 +35,30 @@ export default {
   name: 'Topic',
   data () {
     return {
-      msg: 'topic'
+      list: []
     }
+  },
+  created () {
+    this.$ajax({
+      method: 'get',
+      url: process.env.BASE_API + '/api/v2/topic_list',
+      params: {
+        keyword: ''
+      }
+    }).then(res => {
+      if (res.status === 200) {
+        if (res.data.state) {
+          this.list = res.data.data.list
+        } else {
+          this.error = res.data.error
+          this.open = true
+        }
+      } else {
+        this.error = '接口请求失败'
+      }
+    }).catch(error => {
+      console.log(error)
+    })
   }
 }
 </script>

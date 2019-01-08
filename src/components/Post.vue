@@ -5,6 +5,9 @@
         <sui-menu-item left>
           <a href='#/post_add'><i class="add icon"></i></a>
         </sui-menu-item>
+        <sui-menu-item left>
+          <div>{{ token }}</div>
+        </sui-menu-item>
       </sui-menu-menu>
 
       <sui-menu-menu position="right">
@@ -16,72 +19,28 @@
         </sui-menu-item>
       </sui-menu-menu>
     </sui-menu>
-    <sui-card  class="fluid">
+
+    <div v-for="item in list" v-bind:item="item" v-bind:key="item.id">
+    <sui-card class="fluid">
       <sui-card-content>
-        <sui-image
-          src="https://semantic-ui.com/images/avatar2/large/kristy.png"
-          shape="circular"
-          size="mini"
-        />
-        Elliot
-        <sui-card-meta slot="right">14h</sui-card-meta>
+        <sui-image v-if="item.avatar" v-bind:src="item.avatar" shape="circular" size="mini"/>
+        {{ item.name }}
+        <sui-card-meta slot="right">{{ item.created_at }}</sui-card-meta>
       </sui-card-content>
-      <sui-image src="https://semantic-ui.com/images/avatar2/large/kristy.png" />
+      <sui-image v-if="item.attachment" v-bind:src="item.attachment" />
       <sui-card-content>
-        <sui-card-description>想什么在呢</sui-card-description>
+        <sui-card-description>{{ item.content }}</sui-card-description>
       </sui-card-content>
       <sui-card-content>
         <span slot="right">
-          <sui-icon name="heart outline" /> 17 likes
+          <sui-icon name="heart outline" /> {{ item.digg }} likes
         </span>
-        <a href='#/detail'><sui-icon name="comment" /> 3 comments</a>
+        <a v-bind:href="'#/detail?post_id=' + item.id"><sui-icon name="comment" /> {{ item.comment}} comments</a>
       </sui-card-content>
     </sui-card>
 
     <sui-divider />
-
-    <sui-card  class="fluid">
-      <sui-card-content>
-        <sui-image
-          src="https://semantic-ui.com/images/avatar2/large/kristy.png"
-          shape="circular"
-          size="mini"
-        />
-        Elliot
-        <sui-card-meta slot="right">14h</sui-card-meta>
-      </sui-card-content>
-      <sui-image src="https://semantic-ui.com/images/avatar2/large/kristy.png" />
-      <sui-card-content>
-        <span slot="right">
-          <sui-icon name="heart outline" /> 17 likes
-        </span>
-        <sui-icon name="comment" /> 3 comments
-      </sui-card-content>
-    </sui-card>
-
-    <sui-divider />
-
-    <sui-card  class="fluid">
-      <sui-card-content>
-        <sui-image
-          src="https://semantic-ui.com/images/avatar2/large/kristy.png"
-          shape="circular"
-          size="mini"
-        />
-        Elliot
-        <sui-card-meta slot="right">14h</sui-card-meta>
-      </sui-card-content>
-      <sui-card-content>
-        <sui-card-description>想什么在呢</sui-card-description>
-      </sui-card-content>
-      <sui-card-content>
-        <span slot="right">
-          <sui-icon name="heart outline" /> 17 likes
-        </span>
-        <sui-icon name="comment" /> 3 comments
-      </sui-card-content>
-    </sui-card>
-
+    </div>
   </div>
 </template>
 
@@ -90,7 +49,34 @@ export default {
   name: 'Post',
   data () {
     return {
-      msg: 'post'
+      list: []
+    }
+  },
+  created () {
+    this.$ajax({
+      method: 'get',
+      url: process.env.BASE_API + '/api/v2/post_list',
+      params: {
+        keyword: ''
+      }
+    }).then(res => {
+      if (res.status === 200) {
+        if (res.data.state) {
+          this.list = res.data.data.list
+        } else {
+          this.error = res.data.error
+          this.open = true
+        }
+      } else {
+        this.error = '接口请求失败'
+      }
+    }).catch(error => {
+      console.log(error)
+    })
+  },
+  computed: {
+    token () {
+      return this.$store.state.email
     }
   }
 }

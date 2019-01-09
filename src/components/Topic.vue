@@ -50,8 +50,7 @@ export default {
         if (res.data.state) {
           this.list = res.data.data.list
         } else {
-          this.error = res.data.error
-          this.open = true
+          this.$store.dispatch('setError', res.data.error)
         }
       } else {
         this.error = '接口请求失败'

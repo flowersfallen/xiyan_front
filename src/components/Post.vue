@@ -25,7 +25,7 @@
       <sui-card-content>
         <sui-image v-if="item.avatar" v-bind:src="item.avatar" shape="circular" size="mini"/>
         {{ item.name }}
-        <sui-card-meta slot="right">{{ item.created_at }}</sui-card-meta>
+        <sui-card-meta slot="right" style="margin-top:8px">{{ item.created_at }}</sui-card-meta>
       </sui-card-content>
       <sui-image v-if="item.attachment" v-bind:src="item.attachment" />
       <sui-card-content>
@@ -33,7 +33,7 @@
       </sui-card-content>
       <sui-card-content>
         <span slot="right">
-          <sui-icon name="heart outline" /> {{ item.digg }} likes
+          <a v-bind:href="'#/detail?post_id=' + item.id"><sui-icon name="heart outline" /> {{ item.digg }} likes </a>
         </span>
         <a v-bind:href="'#/detail?post_id=' + item.id"><sui-icon name="comment" /> {{ item.comment}} comments</a>
       </sui-card-content>
@@ -64,8 +64,7 @@ export default {
         if (res.data.state) {
           this.list = res.data.data.list
         } else {
-          this.error = res.data.error
-          this.open = true
+          this.$store.dispatch('setError', res.data.error)
         }
       } else {
         this.error = '接口请求失败'

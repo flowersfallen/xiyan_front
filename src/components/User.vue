@@ -1,11 +1,11 @@
 <template>
   <div>
     <sui-card  class="fluid">
-      <sui-image src="https://semantic-ui-vue.github.io/static/images/avatar/large/kristy.png" />
+      <sui-image v-if="user.avatar_big" v-bind:src="user.avatar_big" />
       <sui-card-content>
-        <sui-card-header>Kristy</sui-card-header>
-        <sui-card-meta>Joined in 2013</sui-card-meta>
-        <sui-card-description>Kristy is an art director living in New York.</sui-card-description>
+        <sui-card-header>{{ user.name }}</sui-card-header>
+        <sui-card-meta>{{ user.created_at }}</sui-card-meta>
+        <sui-card-description>{{ user.sign }}</sui-card-description>
       </sui-card-content>
       <sui-card-content extra>
         <sui-container text-align="center">
@@ -25,8 +25,29 @@ export default {
   name: 'User',
   data () {
     return {
-      msg: 'user'
+      user: {}
     }
+  },
+  created () {
+    this.$ajax({
+      method: 'get',
+      url: process.env.BASE_API + '/api/auth/user',
+      params: {
+        keyword: ''
+      }
+    }).then(res => {
+      if (res.status === 200) {
+        if (res.data.state) {
+          this.user = res.data.data
+        } else {
+          this.$store.dispatch('setError', res.data.error)
+        }
+      } else {
+        this.error = '接口请求失败'
+      }
+    }).catch(error => {
+      console.log(error)
+    })
   }
 }
 </script>

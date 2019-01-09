@@ -55,9 +55,9 @@ export default {
   margin: 0 0 60px 0;
 }
 #post {
-  padding: 40px 0 0 0;
+  padding: 50px 0 0 0;
 }
 #topic {
-  padding: 40px 0 0 0;
+  padding: 50px 0 0 0;
 }
 </style>

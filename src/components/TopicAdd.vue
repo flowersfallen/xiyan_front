@@ -1,12 +1,12 @@
 <template>
   <sui-segment>
-    <sui-input placeholder="话题" v-model="title" class="fluid" />
+    <sui-input placeholder="话题标题" v-model="title" class="fluid" />
     <br/>
     <div class="ui form">
-      <textarea placeholder="描述" v-model="description"></textarea>
+      <textarea placeholder="话题描述" v-model="description"></textarea>
     </div>
     <br/>
-    <sui-button content="提交" class="fluid" v-on:click='submit' />
+    <sui-button content="发话题" class="fluid" v-on:click='submit' />
   </sui-segment>
 </template>
 

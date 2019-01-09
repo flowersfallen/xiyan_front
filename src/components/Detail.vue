@@ -12,7 +12,7 @@
       </sui-card-content>
       <sui-card-content>
         <span slot="right">
-          <sui-icon name="heart outline" /> {{ post.digg }} likes
+          <sui-icon name="heart outline" v-on:click='digg' /> {{ post.digg }} likes
         </span>
         <sui-icon name="comment" /> {{ post.comment }} comments
       </sui-card-content>
@@ -111,6 +111,29 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
+
+          } else {
+            this.$store.dispatch('setError', res.data.error)
+          }
+        } else {
+          this.error = '接口请求失败'
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    digg: function () {
+      this.$ajax({
+        method: 'post',
+        url: process.env.BASE_API + '/api/v2/post_interact',
+        data: {
+          id: this.post_id,
+          type: 'digg'
+        }
+      }).then(res => {
+        if (res.status === 200) {
+          if (res.data.state) {
+
           } else {
             this.$store.dispatch('setError', res.data.error)
           }

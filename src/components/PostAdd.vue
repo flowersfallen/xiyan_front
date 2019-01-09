@@ -5,13 +5,13 @@
         <sui-dropdown placeholder="选择话题" selection :options="options" v-model="topic_id"/>
       </sui-form-field>
       <sui-form-field>
-        <textarea placeholder="内容" v-model="content" ></textarea>
+        <textarea placeholder="帖子内容" v-model="content" ></textarea>
       </sui-form-field>
       <sui-form-field>
         <input type="file" accept="image/png,image/jpg" capture="camera" @change="getFile($event)">
       </sui-form-field>
       <sui-image v-if="file" v-bind:src="file" />
-      <sui-button content="提交" class="fluid" v-on:click='submit'/>
+      <sui-button content="发帖子" class="fluid" v-on:click='submit'/>
     </div>
   </sui-segment>
 </template>
@@ -21,7 +21,7 @@ export default {
   name: 'PostAdd',
   data () {
     return {
-      topic_id: '',
+      topic_id: null,
       options: [],
       content: '',
       file: '',

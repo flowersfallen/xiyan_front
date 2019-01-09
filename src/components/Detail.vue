@@ -2,23 +2,19 @@
   <div>
     <sui-card  class="fluid">
       <sui-card-content>
-        <sui-image
-          src="https://semantic-ui.com/images/avatar2/large/kristy.png"
-          shape="circular"
-          size="mini"
-        />
-        Elliot
-        <sui-card-meta slot="right">14h</sui-card-meta>
+        <sui-image v-if="post.avatar" v-bind:src="post.avatar" shape="circular" size="mini"/>
+        {{ post.name }}
+        <sui-card-meta slot="right">{{ post.created_at }}</sui-card-meta>
       </sui-card-content>
-      <sui-image src="https://semantic-ui.com/images/avatar2/large/kristy.png" />
+      <sui-image v-if="post.attachment" v-bind:src="post.attachment" />
       <sui-card-content>
-        <sui-card-description>想什么在呢</sui-card-description>
+        <sui-card-description>{{ post.content }}</sui-card-description>
       </sui-card-content>
       <sui-card-content>
         <span slot="right">
-          <sui-icon name="heart outline" /> 17 likes
+          <sui-icon name="heart outline" /> {{ post.digg }} likes
         </span>
-        <sui-icon name="comment" /> 3 comments
+        <sui-icon name="comment" /> {{ post.comment }} comments
       </sui-card-content>
     </sui-card>
 
@@ -44,18 +40,6 @@
         <div class="ui blue submit button" v-on:click='submit'>发布</div>
       </div>
     </sui-segment>
-
-    <sui-modal v-model="open">
-      <sui-modal-header>错误提示</sui-modal-header>
-      <sui-modal-content>
-        {{error}}
-      </sui-modal-content>
-      <sui-segment>
-        <sui-button positive class="fluid" @click.native="toggle">
-          关闭
-        </sui-button>
-      </sui-segment>
-    </sui-modal>
   </div>
 </template>
 
@@ -65,10 +49,9 @@ export default {
   data () {
     return {
       post_id: '',
+      post: {},
       comment: '',
-      list: [],
-      error: '',
-      open: false
+      list: []
     }
   },
   created () {
@@ -76,6 +59,25 @@ export default {
     if (postId) {
       this.post_id = postId
     }
+    this.$ajax({
+      method: 'get',
+      url: process.env.BASE_API + '/api/v2/post_detail',
+      params: {
+        id: this.post_id
+      }
+    }).then(res => {
+      if (res.status === 200) {
+        if (res.data.state) {
+          this.post = res.data.data
+        } else {
+          this.$store.dispatch('setError', res.data.error)
+        }
+      } else {
+        this.error = '接口请求失败'
+      }
+    }).catch(error => {
+      console.log(error)
+    })
     this.$ajax({
       method: 'get',
       url: process.env.BASE_API + '/api/v2/comment_list',
@@ -88,8 +90,7 @@ export default {
         if (res.data.state) {
           this.list = res.data.data.list
         } else {
-          this.error = res.data.error
-          this.open = true
+          this.$store.dispatch('setError', res.data.error)
         }
       } else {
         this.error = '接口请求失败'
@@ -99,9 +100,6 @@ export default {
     })
   },
   methods: {
-    toggle: function () {
-      this.open = !this.open
-    },
     submit: function () {
       this.$ajax({
         method: 'post',
@@ -113,10 +111,8 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.$router.push({ path: 'topic' })
           } else {
-            this.error = res.data.error
-            this.open = true
+            this.$store.dispatch('setError', res.data.error)
           }
         } else {
           this.error = '接口请求失败'

@@ -5,19 +5,6 @@
     <sui-input placeholder="password" v-model="password" class="fluid" />
     <br/>
     <sui-button content="提交" class="fluid" v-on:click='login' />
-
-    <sui-modal v-model="open">
-      <sui-modal-header>错误提示</sui-modal-header>
-      <sui-modal-content>
-        {{error}}
-      </sui-modal-content>
-      <sui-segment>
-        <sui-button positive class="fluid" @click.native="toggle">
-          关闭
-        </sui-button>
-      </sui-segment>
-    </sui-modal>
-
   </sui-segment>
 </template>
 
@@ -33,9 +20,6 @@ export default {
     }
   },
   methods: {
-    toggle: function () {
-      this.open = !this.open
-    },
     login: function () {
       this.$ajax({
         method: 'post',
@@ -47,8 +31,7 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            var token = res.data.data.token
-            this.$store.dispatch('refreshToken', token)
+            this.$store.dispatch('refreshToken', res.data.data)
             var redirect = this.$route.query.redirect
             if (redirect) {
               this.$router.push({ path: redirect })
@@ -56,8 +39,7 @@ export default {
               this.$router.push({ path: 'user' })
             }
           } else {
-            this.error = res.data.error
-            this.open = true
+            this.$store.dispatch('setError', res.data.error)
           }
         } else {
           this.error = '接口请求失败'

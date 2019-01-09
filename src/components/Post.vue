@@ -6,7 +6,7 @@
           <a href='#/post_add'><i class="add icon"></i></a>
         </sui-menu-item>
         <sui-menu-item left>
-          <div>{{ token }}</div>
+          <div>{{ name }}</div>
         </sui-menu-item>
       </sui-menu-menu>
 
@@ -75,8 +75,8 @@ export default {
     })
   },
   computed: {
-    token () {
-      return this.$store.state.email
+    name () {
+      return this.$store.state.name
     }
   }
 }

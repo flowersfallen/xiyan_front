@@ -16,9 +16,7 @@ export default {
   data () {
     return {
       title: '',
-      description: '',
-      error: '',
-      open: false
+      description: ''
     }
   },
   methods: {
@@ -38,10 +36,11 @@ export default {
             this.$store.dispatch('setError', res.data.error)
           }
         } else {
-          this.error = '接口请求失败'
+          this.$store.dispatch('setError', '接口请求失败')
         }
       }).catch(error => {
         console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
       })
     }
   }

@@ -9,42 +9,45 @@ export default new Vuex.Store({
     token: '',
     ttl: '',
     refresh_ttl: '',
-    name: '',
-    avatar: '',
-    email: '',
+    user: '',
     open: false,
     error: ''
   },
   mutations: {
     logined (state, data) {
+      // 返回值
       state.token = data.token
       state.ttl = data.ttl
       state.refresh_ttl = data.refresh_ttl
+      // 缓存
       localStorage.xiyan_token = data.token
+      localStorage.xiyan_tll = data.ttl
+      localStorage.xiyan_refresh = data.refresh_ttl
+      // 头
       axios.defaults.headers.common['Authorization'] = 'bearer ' + data.token
     },
     refreshToken (state, data) {
       state.token = data.token
       state.ttl = data.ttl
-      state.refresh_ttl = data.refresh_ttl
       localStorage.xiyan_token = data.token
+      localStorage.xiyan_ttl = data.ttl
       axios.defaults.headers.common['Authorization'] = 'bearer ' + data.token
     },
     profile (state, data) {
-      state.name = data.name
-      state.avatar = data.avatar
-      state.email = data.email
+      state.user = data
+      localStorage.xiyan_user = JSON.stringify(data)
     },
     logout (state) {
       state.token = ''
       state.ttl = ''
       state.refresh_ttl = ''
       state.name = ''
-      state.avatar = ''
-      state.email = ''
       state.open = false
       state.error = ''
       localStorage.removeItem('xiyan_token')
+      localStorage.removeItem('xiyan_ttl')
+      localStorage.removeItem('xiyan_refresh')
+      localStorage.removeItem('xiyan_data')
     },
     setError (state, data) {
       state.open = true
@@ -56,26 +59,14 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    logined ({dispatch, commit}, data) {
+    logined ({commit}, data) {
       return new Promise(function (resolve, reject) {
         commit('logined', data)
-        dispatch('profile').then(() => {
-          resolve()
-        }).catch(error => {
-          console.log(error)
-        })
       })
     },
-    profile ({commit}) {
+    profile ({commit}, data) {
       return new Promise(function (resolve, reject) {
-        axios.get(process.env.BASE_API + '/api/auth/user', {}).then(respond => {
-          if (respond.status === 200) {
-            commit('profile', respond.data.data)
-            resolve()
-          } else {
-            // reject()
-          }
-        })
+        commit('profile', data)
       })
     },
     logout ({commit}) {
@@ -83,14 +74,9 @@ export default new Vuex.Store({
         commit('logout')
       })
     },
-    refreshToken ({dispatch, commit}, data) {
+    refreshToken ({commit}, data) {
       return new Promise(function (resolve, reject) {
         commit('refreshToken', data)
-        dispatch('profile').then(() => {
-          resolve()
-        }).catch(error => {
-          console.log(error)
-        })
       })
     },
     setError ({commit}, data) {

@@ -1,45 +1,47 @@
 <template>
   <sui-segment>
+    <sui-input placeholder="昵称" v-model="name" class="fluid" />
+    <br/>
     <sui-input placeholder="邮箱" v-model="email" class="fluid" />
     <br/>
     <sui-input placeholder="密码" v-model="password" class="fluid" />
     <br/>
+    <sui-input placeholder="邀请码" v-model="code" class="fluid" />
+    <br/>
     <div is="sui-button-group" class="fluid">
-      <sui-button positive v-on:click='login'>登录</sui-button>
+      <sui-button><a href="#/login">登录</a></sui-button>
       <sui-button-or />
-      <sui-button><a href="#/register">注册</a></sui-button>
+      <sui-button positive v-on:click='register'>注册</sui-button>
     </div>
   </sui-segment>
 </template>
 
 <script>
 export default {
-  name: 'Login',
+  name: 'Register',
   data () {
     return {
+      name: '',
       email: '',
-      password: ''
+      password: '',
+      code: ''
     }
   },
   methods: {
-    login: function () {
+    register: function () {
       this.$ajax({
         method: 'post',
-        url: process.env.BASE_API + '/api/auth/login',
+        url: process.env.BASE_API + '/api/auth/register',
         data: {
+          name: this.name,
           email: this.email,
-          password: this.password
+          password: this.password,
+          code: this.code
         }
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.$store.dispatch('logined', res.data.data)
-            var redirect = this.$route.query.redirect
-            if (redirect) {
-              this.$router.push({ path: redirect })
-            } else {
-              this.$router.push({ path: '/user' })
-            }
+            this.$router.push({ path: '/login' })
           } else {
             this.$store.dispatch('setError', res.data.error)
           }

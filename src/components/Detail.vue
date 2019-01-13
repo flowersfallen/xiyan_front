@@ -12,7 +12,7 @@
       </sui-card-content>
       <sui-card-content>
         <span slot="right">
-          <sui-icon name="heart outline" v-on:click='digg' /> {{ post.digg }} likes
+          <sui-icon v-bind:class="{ red: post.digged }" name="heart" v-on:click='digg' /> {{ post.digg }} likes
         </span>
         <sui-icon name="comment" /> {{ post.comment }} comments
       </sui-card-content>
@@ -50,56 +50,67 @@ export default {
     return {
       post_id: '',
       post: {},
-      comment: '',
-      list: []
+      list: [],
+      comment: ''
     }
   },
   created () {
-    var postId = this.$route.query.post_id
-    if (postId) {
-      this.post_id = postId
-    }
-    this.$ajax({
-      method: 'get',
-      url: process.env.BASE_API + '/api/v2/post_detail',
-      params: {
-        id: this.post_id
-      }
-    }).then(res => {
-      if (res.status === 200) {
-        if (res.data.state) {
-          this.post = res.data.data
-        } else {
-          this.$store.dispatch('setError', res.data.error)
-        }
-      } else {
-        this.error = '接口请求失败'
-      }
-    }).catch(error => {
-      console.log(error)
-    })
-    this.$ajax({
-      method: 'get',
-      url: process.env.BASE_API + '/api/v2/comment_list',
-      params: {
-        post_id: this.post_id,
-        keyword: ''
-      }
-    }).then(res => {
-      if (res.status === 200) {
-        if (res.data.state) {
-          this.list = res.data.data.list
-        } else {
-          this.$store.dispatch('setError', res.data.error)
-        }
-      } else {
-        this.error = '接口请求失败'
-      }
-    }).catch(error => {
-      console.log(error)
-    })
+    this.getPost()
+    this.getComment()
   },
   methods: {
+    getPost: function () {
+      var postId = this.$route.query.post_id
+      if (postId) {
+        this.post_id = postId
+      }
+      this.$ajax({
+        method: 'get',
+        url: process.env.BASE_API + '/api/v2/post_detail',
+        params: {
+          id: this.post_id
+        }
+      }).then(res => {
+        if (res.status === 200) {
+          if (res.data.state) {
+            this.post = res.data.data
+          } else {
+            this.$store.dispatch('setError', res.data.error)
+          }
+        } else {
+          this.$store.dispatch('setError', '接口请求失败')
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
+      })
+    },
+    getComment: function () {
+      var postId = this.$route.query.post_id
+      if (postId) {
+        this.post_id = postId
+      }
+      this.$ajax({
+        method: 'get',
+        url: process.env.BASE_API + '/api/v2/comment_list',
+        params: {
+          post_id: this.post_id
+        }
+      }).then(res => {
+        if (res.status === 200) {
+          if (res.data.state) {
+            this.list = res.data.data.list
+          } else {
+            this.$store.dispatch('setError', res.data.error)
+          }
+        } else {
+          this.$store.dispatch('setError', '接口请求失败')
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
+      })
+    },
     submit: function () {
       this.$ajax({
         method: 'post',
@@ -111,15 +122,17 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-
+            this.getPost()
+            this.getComment()
           } else {
             this.$store.dispatch('setError', res.data.error)
           }
         } else {
-          this.error = '接口请求失败'
+          this.$store.dispatch('setError', '接口请求失败')
         }
       }).catch(error => {
         console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
       })
     },
     digg: function () {
@@ -133,15 +146,16 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-
+            this.getPost()
           } else {
             this.$store.dispatch('setError', res.data.error)
           }
         } else {
-          this.error = '接口请求失败'
+          this.$store.dispatch('setError', '接口请求失败')
         }
       }).catch(error => {
         console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
       })
     }
   }

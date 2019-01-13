@@ -35,7 +35,7 @@
         <span slot="right">
           <a v-bind:href="'#/detail?post_id=' + item.id"><sui-icon name="heart outline" /> {{ item.digg }} likes </a>
         </span>
-        <a v-bind:href="'#/detail?post_id=' + item.id"><sui-icon name="comment" /> {{ item.comment}} comments</a>
+        <a v-bind:href="'#/detail?post_id=' + item.id"><sui-icon name="comment outline" /> {{ item.comment}} comments</a>
       </sui-card-content>
     </sui-card>
 
@@ -67,10 +67,11 @@ export default {
           this.$store.dispatch('setError', res.data.error)
         }
       } else {
-        this.error = '接口请求失败'
+        this.$store.dispatch('setError', '接口请求失败')
       }
     }).catch(error => {
       console.log(error)
+      this.$store.dispatch('setError', '接口请求异常')
     })
   },
   computed: {

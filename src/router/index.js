@@ -1,16 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Index from '@/components/Index'
-import List from '@/components/List'
-import Show from '@/components/Show'
-
 import Post from '@/components/Post'
 import Topic from '@/components/Topic'
 import Notice from '@/components/Notice'
 import User from '@/components/User'
 import Detail from '@/components/Detail'
 import Login from '@/components/Login'
+import Register from '@/components/Register'
+import UserEdit from '@/components/UserEdit'
 import TopicAdd from '@/components/TopicAdd'
 import PostAdd from '@/components/PostAdd'
 
@@ -66,21 +64,6 @@ const router = new Router({
       component: Post
     },
     {
-      path: '/index',
-      name: 'Index',
-      component: Index
-    },
-    {
-      path: '/list',
-      name: 'List',
-      component: List
-    },
-    {
-      path: '/show',
-      name: 'Show',
-      component: Show
-    },
-    {
       path: '/post',
       name: 'Post',
       component: Post
@@ -101,10 +84,7 @@ const router = new Router({
     {
       path: '/user',
       name: 'User',
-      component: User,
-      meta: {
-        requireAuth: true
-      }
+      component: User
     },
     {
       path: '/detail',
@@ -115,6 +95,19 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
+    },
+    {
+      path: '/user_edit',
+      name: 'UserEdit',
+      component: UserEdit,
+      meta: {
+        requireAuth: true
+      }
     },
     {
       path: '/topic_add',

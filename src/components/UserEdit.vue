@@ -2,65 +2,45 @@
   <sui-segment>
     <div class="ui form">
       <sui-form-field>
-        <sui-dropdown placeholder="选择话题" selection :options="options" v-model="topic_id"/>
+        <sui-input placeholder="昵称" v-model="user.name" class="fluid" />
       </sui-form-field>
       <sui-form-field>
-        <textarea placeholder="帖子内容" v-model="content" ></textarea>
+        <textarea placeholder="签名" v-model="user.sign" ></textarea>
       </sui-form-field>
       <sui-form-field>
-        <input type="file" accept="image/*" capture="camera" @change="getFile($event)">
+        <label>小头像,列表展示,建议大小(50*50)</label>
+        <input type="file" accept="image/*" capture="camera" @change="getFile($event, 'small')">
       </sui-form-field>
-      <sui-image v-if="file" v-bind:src="file" />
-      <sui-button content="发帖子" class="fluid" v-on:click='submit'/>
+      <sui-form-field>
+        <sui-image v-if="user.avatar" v-bind:src="user.avatar" />
+      </sui-form-field>
+      <sui-form-field>
+        <label>大头像,详情展示,建议大小(800*800)</label>
+        <input type="file" accept="image/*" capture="camera" @change="getFile($event, 'big')">
+      </sui-form-field>
+      <sui-form-field>
+        <sui-image v-if="user.avatar_big" v-bind:src="user.avatar_big" />
+      </sui-form-field>
+      <sui-button content="提交" class="fluid" v-on:click='submit'/>
     </div>
   </sui-segment>
 </template>
 
 <script>
 export default {
-  name: 'PostAdd',
+  name: 'UserEdit',
   data () {
     return {
-      topic_id: '',
-      options: [],
-      content: '',
-      file: ''
+      user: {}
     }
   },
   created () {
-    this.$ajax({
-      method: 'get',
-      url: process.env.BASE_API + '/api/v2/topic_list',
-      data: {
-        keyword: ''
-      }
-    }).then(res => {
-      if (res.status === 200) {
-        if (res.data.state) {
-          var topic = res.data.data.list
-          var option = []
-          var item = {}
-          topic.forEach(function (i) {
-            item = {
-              text: i.title,
-              value: i.id
-            }
-            option.push(item)
-          })
-          this.options = option
-        } else {
-          this.$store.dispatch('setError', res.data.error)
-        }
-      } else {
-        this.$store.dispatch('setError', '接口请求失败')
-      }
-    }).catch(error => {
-      console.log(error)
-      this.$store.dispatch('setError', '接口请求异常')
-    })
+    var str = localStorage.getItem('xiyan_user')
+    var json = JSON.parse(str)
+    this.user = json
   },
   methods: {
-    getFile: function (event) {
+    getFile: function (event, type) {
       var file = event.target.files[0]
       var formData = new FormData()
       formData.append('file', file)
@@ -73,7 +53,11 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.file = res.data.data.url
+            if (type === 'small') {
+              this.user.avatar = res.data.data.url
+            } else {
+              this.user.avatar_big = res.data.data.url
+            }
           } else {
             this.$store.dispatch('setError', res.data.error)
           }
@@ -88,16 +72,18 @@ export default {
     submit: function () {
       this.$ajax({
         method: 'post',
-        url: process.env.BASE_API + '/api/v2/post_add',
+        url: process.env.BASE_API + '/api/auth/user_edit',
         data: {
-          content: this.content,
-          topic_id: this.topic_id,
-          attachment: this.file
+          name: this.user.name,
+          sign: this.user.sign,
+          avatar: this.user.avatar,
+          avatar_big: this.user.avatar_big
         }
       }).then(res => {
         if (res.status === 200) {
+          this.$store.dispatch('profile', res.data.data)
           if (res.data.state) {
-            this.$router.push({ path: 'post' })
+            this.$router.push({ path: 'user', query: {redirect: this.$router.currentRoute.fullPath} })
           } else {
             this.$store.dispatch('setError', res.data.error)
           }

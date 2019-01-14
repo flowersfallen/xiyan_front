@@ -3,7 +3,7 @@
     <sui-feed v-for="item in list" v-bind:item="item" v-bind:key="item.id">
       <sui-feed-event>
         <sui-feed-label>
-          <img v-if="item.avatar" v-bind:src="item.avatar"/>
+          <a v-bind:href="'#/user?user_id=' + item.from"><img v-if="item.avatar" v-bind:src="item.avatar"/></a>
         </sui-feed-label>
         <sui-feed-content>
           <sui-feed-summary>
@@ -21,27 +21,38 @@ export default {
   name: 'Notice',
   data () {
     return {
-      list: []
+      list: [],
+      page: 1,
+      pagesize: 15
     }
   },
   created () {
-    this.$ajax({
-      method: 'get',
-      url: process.env.BASE_API + '/api/v2/notice_list'
-    }).then(res => {
-      if (res.status === 200) {
-        if (res.data.state) {
-          this.list = res.data.data.list
-        } else {
-          this.$store.dispatch('setError', res.data.error)
+    this.getNotice()
+  },
+  methods: {
+    getNotice: function () {
+      this.$ajax({
+        method: 'get',
+        url: process.env.BASE_API + '/api/v2/notice_list',
+        params: {
+          page: this.page,
+          pagesize: this.pagesize
         }
-      } else {
-        this.$store.dispatch('setError', '接口请求失败')
-      }
-    }).catch(error => {
-      console.log(error)
-      this.$store.dispatch('setError', '接口请求异常')
-    })
+      }).then(res => {
+        if (res.status === 200) {
+          if (res.data.state) {
+            this.list = res.data.data.list
+          } else {
+            this.$store.dispatch('setError', res.data.error)
+          }
+        } else {
+          this.$store.dispatch('setError', '接口请求失败')
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
+      })
+    }
   }
 }
 </script>

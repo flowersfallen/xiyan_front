@@ -2,8 +2,10 @@
   <div>
     <sui-card  class="fluid">
       <sui-card-content>
-        <sui-image v-if="post.avatar" v-bind:src="post.avatar" shape="circular" size="mini"/>
-        {{ post.name }}
+        <a v-bind:href="'#/user?user_id=' + post.created_by">
+          <sui-image v-if="post.avatar" v-bind:src="post.avatar" shape="circular" size="mini"/>
+        </a>
+        <a v-bind:href="'#/user?user_id=' + post.created_by">{{ post.name }}</a>
         <sui-card-meta slot="right">{{ post.created_at }}</sui-card-meta>
       </sui-card-content>
       <sui-image v-if="post.attachment" v-bind:src="post.attachment" />
@@ -25,7 +27,7 @@
         <sui-comment v-for="item in list" v-bind:item="item" v-bind:key="item.id">
           <sui-comment-avatar v-if="item.avatar" v-bind:src="item.avatar" />
           <sui-comment-content>
-            <a is="sui-comment-author">{{ item.name }}</a>
+            <a is="sui-comment-author" v-bind:href="'#/user?user_id=' + item.created_by">{{ item.name }}</a>
             <sui-comment-metadata>
               <div>{{ item.created_at }}</div>
             </sui-comment-metadata>

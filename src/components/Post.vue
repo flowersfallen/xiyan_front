@@ -13,8 +13,8 @@
       <sui-menu-menu position="right">
         <sui-menu-item right>
           <div class="ui right action input">
-            <input type="text" placeholder="搜帖子">
-            <sui-button icon="search" attached="right"/>
+            <input type="text" v-model="keyword" placeholder="搜帖子">
+            <sui-button icon="search" attached="right" v-on:click='getPost'/>
           </div>
         </sui-menu-item>
       </sui-menu-menu>
@@ -23,8 +23,10 @@
     <div v-for="item in list" v-bind:item="item" v-bind:key="item.id">
     <sui-card class="fluid">
       <sui-card-content>
-        <sui-image v-if="item.avatar" v-bind:src="item.avatar" shape="circular" size="mini"/>
-        {{ item.name }}
+        <a v-bind:href="'#/user?user_id=' + item.created_by">
+          <sui-image v-if="item.avatar" v-bind:src="item.avatar" shape="circular" size="mini"/>
+        </a>
+        <a v-bind:href="'#/user?user_id=' + item.created_by">{{ item.name }}</a>
         <sui-card-meta slot="right" style="margin-top:8px">{{ item.created_at }}</sui-card-meta>
       </sui-card-content>
       <sui-image v-if="item.attachment" v-bind:src="item.attachment" />
@@ -49,30 +51,46 @@ export default {
   name: 'Post',
   data () {
     return {
-      list: []
+      list: [],
+      keyword: '',
+      topic_id: '',
+      page: 1,
+      pagesize: 15
     }
   },
   created () {
-    this.$ajax({
-      method: 'get',
-      url: process.env.BASE_API + '/api/v2/post_list',
-      params: {
-        keyword: ''
-      }
-    }).then(res => {
-      if (res.status === 200) {
-        if (res.data.state) {
-          this.list = res.data.data.list
-        } else {
-          this.$store.dispatch('setError', res.data.error)
+    var topicId = this.$route.query.topic_id
+    if (topicId) {
+      this.topic_id = topicId
+    }
+    this.getPost()
+  },
+  methods: {
+    getPost: function () {
+      this.$ajax({
+        method: 'get',
+        url: process.env.BASE_API + '/api/v2/post_list',
+        params: {
+          keyword: this.keyword,
+          page: this.page,
+          pagesize: this.pagesize,
+          topic_id: this.topic_id
         }
-      } else {
-        this.$store.dispatch('setError', '接口请求失败')
-      }
-    }).catch(error => {
-      console.log(error)
-      this.$store.dispatch('setError', '接口请求异常')
-    })
+      }).then(res => {
+        if (res.status === 200) {
+          if (res.data.state) {
+            this.list = res.data.data.list
+          } else {
+            this.$store.dispatch('setError', res.data.error)
+          }
+        } else {
+          this.$store.dispatch('setError', '接口请求失败')
+        }
+      }).catch(error => {
+        console.log(error)
+        this.$store.dispatch('setError', '接口请求异常')
+      })
+    }
   },
   computed: {
     name () {

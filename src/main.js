@@ -6,9 +6,11 @@ import router from './router'
 import store from './store'
 import SuiVue from 'semantic-ui-vue'
 import 'semantic-ui-css/semantic.min.css'
+import VueScroller from 'vue-scroller'
 
 Vue.config.productionTip = false
 Vue.use(SuiVue)
+Vue.use(VueScroller)
 
 /* eslint-disable no-new */
 new Vue({

@@ -22,26 +22,28 @@
 
     <sui-divider />
 
-    <sui-segment>
-      <sui-comment-group>
-        <sui-comment v-for="item in list" v-bind:item="item" v-bind:key="item.id">
-          <sui-comment-avatar v-if="item.avatar" v-bind:src="item.avatar" />
-          <sui-comment-content>
-            <a is="sui-comment-author" v-bind:href="'#/user?user_id=' + item.created_by">{{ item.name }}</a>
-            <sui-comment-metadata>
-              <div>{{ item.created_at }}</div>
-            </sui-comment-metadata>
-            <sui-comment-text>{{ item.content }}</sui-comment-text>
-          </sui-comment-content>
-        </sui-comment>
-      </sui-comment-group>
+    <scroller style="padding-top:50px;position:relative" :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
+      <sui-segment>
+        <div class="ui left icon action input fluid">
+          <i class="comments icon"></i>
+          <input type="text" placeholder="评论" v-model="comment" />
+          <div class="ui blue submit button" v-on:click='submit'>发布</div>
+        </div>
 
-      <div class="ui left icon action input fluid">
-        <i class="comments icon"></i>
-        <input type="text" placeholder="评论" v-model="comment" />
-        <div class="ui blue submit button" v-on:click='submit'>发布</div>
-      </div>
-    </sui-segment>
+        <sui-comment-group>
+          <sui-comment v-for="item in list" v-bind:item="item" v-bind:key="item.id">
+            <sui-comment-avatar v-if="item.avatar" v-bind:src="item.avatar" />
+            <sui-comment-content>
+              <a is="sui-comment-author" v-bind:href="'#/user?user_id=' + item.created_by">{{ item.name }}</a>
+              <sui-comment-metadata>
+                <div>{{ item.created_at }}</div>
+              </sui-comment-metadata>
+              <sui-comment-text>{{ item.content }}</sui-comment-text>
+            </sui-comment-content>
+          </sui-comment>
+        </sui-comment-group>
+      </sui-segment>
+    </scroller>
   </div>
 </template>
 
@@ -53,7 +55,10 @@ export default {
       post_id: '',
       post: {},
       list: [],
-      comment: ''
+      total: 0,
+      comment: '',
+      page: 1,
+      pagesize: 5
     }
   },
   created () {
@@ -96,12 +101,21 @@ export default {
         method: 'get',
         url: process.env.BASE_API + '/api/v2/comment_list',
         params: {
-          post_id: this.post_id
+          post_id: this.post_id,
+          page: this.page,
+          pagesize: this.pagesize
         }
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.list = res.data.data.list
+            this.total = res.data.data.total
+            if (this.page !== 1) {
+              this.list = this.list.concat(res.data.data.list)
+            } else {
+              this.list = res.data.data.list
+            }
+            this.$refs.my_scroller.finishPullToRefresh()
+            this.$refs.my_scroller.finishInfinite(false)
           } else {
             this.$store.dispatch('setError', res.data.error)
           }
@@ -124,7 +138,7 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.getPost()
+            this.page = 1
             this.getComment()
           } else {
             this.$store.dispatch('setError', res.data.error)
@@ -148,7 +162,11 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.getPost()
+            if (this.post.digged === 1) {
+              this.post.digged = 0
+            } else {
+              this.post.digged = 1
+            }
           } else {
             this.$store.dispatch('setError', res.data.error)
           }
@@ -159,6 +177,20 @@ export default {
         console.log(error)
         this.$store.dispatch('setError', '接口请求异常')
       })
+    },
+    refresh: function () {
+      console.log('refresh')
+      this.page = 1
+      this.getComment()
+    },
+    infinite: function () {
+      console.log('infinite')
+      if (this.page * this.pagesize >= this.total) {
+        this.$refs.my_scroller.finishInfinite(true)
+      } else {
+        this.page++
+        this.getComment()
+      }
     }
   }
 }

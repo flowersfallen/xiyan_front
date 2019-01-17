@@ -1,5 +1,13 @@
 <template>
   <div>
+    <sui-menu fixed="top">
+      <sui-menu-menu position="left">
+        <sui-menu-item left>
+          <a href='#/post_add'><i class="add icon"></i></a>
+        </sui-menu-item>
+      </sui-menu-menu>
+    </sui-menu>
+
     <sui-card  class="fluid">
       <sui-image v-if="user.avatar_big" v-bind:src="user.avatar_big" />
       <sui-card-content>

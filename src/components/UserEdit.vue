@@ -8,14 +8,7 @@
         <textarea placeholder="签名" v-model="user.sign" ></textarea>
       </sui-form-field>
       <sui-form-field>
-        <label>小头像,列表展示,建议大小(50*50)</label>
-        <input type="file" accept="image/*" capture="camera" @change="getFile($event, 'small')">
-      </sui-form-field>
-      <sui-form-field>
-        <sui-image v-if="user.avatar" v-bind:src="user.avatar" />
-      </sui-form-field>
-      <sui-form-field>
-        <label>大头像,详情展示,建议大小(800*800)</label>
+        <label>大头像,详情展示,建议大小(600*600)</label>
         <input type="file" accept="image/*" capture="camera" @change="getFile($event, 'big')">
       </sui-form-field>
       <sui-form-field>
@@ -53,11 +46,8 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            if (type === 'small') {
-              this.user.avatar = res.data.data.url
-            } else {
-              this.user.avatar_big = res.data.data.url
-            }
+            this.user.avatar = res.data.data.small_url
+            this.user.avatar_big = res.data.data.url
           } else {
             this.$store.dispatch('setError', res.data.error)
           }

@@ -1,21 +1,13 @@
 <template>
   <div>
-    <sui-menu fixed="top">
-      <sui-menu-menu position="left">
-        <sui-menu-item left>
-          <a href='#/post_add'><i class="add icon"></i></a>
-        </sui-menu-item>
-      </sui-menu-menu>
-    </sui-menu>
-
     <sui-card  class="fluid">
       <sui-image v-if="user.avatar_big" v-bind:src="user.avatar_big" />
-      <sui-card-content>
+      <sui-card-content v-if="user.id">
         <sui-card-header>{{ user.name }}</sui-card-header>
         <sui-card-meta>{{ user.created_at }}</sui-card-meta>
         <sui-card-description>{{ user.sign }}</sui-card-description>
       </sui-card-content>
-      <sui-card-content extra v-if="!user_id">
+      <sui-card-content extra v-if="user_opt">
         <sui-container text-align="center">
             <sui-button-group>
               <!-- <sui-button basic>帖子</sui-button>
@@ -36,7 +28,8 @@ export default {
   data () {
     return {
       user: {},
-      user_id: ''
+      user_id: '',
+      user_opt: false
     }
   },
   created () {
@@ -55,7 +48,10 @@ export default {
         if (res.data.state) {
           this.user = res.data.data
           if (!this.user_id) {
+            this.user_opt = true
             this.$store.dispatch('profile', res.data.data)
+          } else {
+            this.user_opt = false
           }
         } else {
           this.$store.dispatch('setError', res.data.error)

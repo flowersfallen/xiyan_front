@@ -9,6 +9,8 @@
       <sui-menu-item><a href='#/user'>我</a></sui-menu-item>
     </sui-menu>
 
+    <div style="text-align:center"><a href="http://www.miitbeian.gov.cn/">鄂ICP备19002523号</a></div>
+
     <sui-modal v-model="open">
       <sui-modal-header>错误提示</sui-modal-header>
       <sui-modal-content>
@@ -53,11 +55,5 @@ export default {
 <style>
 #app {
   margin: 0 0 60px 0;
-}
-#post {
-  padding: 50px 0 0 0;
-}
-#topic {
-  padding: 50px 0 0 0;
 }
 </style>

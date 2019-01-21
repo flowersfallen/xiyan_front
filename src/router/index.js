@@ -17,7 +17,10 @@ import axios from 'axios'
 axios.interceptors.request.use(
   config => {
     const token = localStorage.getItem('xiyan_token')
-    if (token) {
+    const ttl = localStorage.getItem('xiyan_ttl')
+    var time = new Date().getTime()
+    var diff = ttl * 1000 - time
+    if (token && ttl && (diff > 0)) {
       config.headers.Authorization = `Bearer ${token}`
     }
     return config

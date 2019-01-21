@@ -6,13 +6,13 @@
           <sui-image v-if="post.avatar" v-bind:src="post.avatar" shape="circular" size="mini"/>
         </a>
         <a v-bind:href="'#/user?user_id=' + post.created_by">{{ post.name }}</a>
-        <sui-card-meta slot="right">{{ post.created_at }}</sui-card-meta>
+        <sui-card-meta slot="right" style="margin-top:8px">{{ post.created_at }}</sui-card-meta>
       </sui-card-content>
       <sui-image v-if="post.attachment" v-bind:src="post.attachment" />
       <sui-card-content>
         <sui-card-description>{{ post.content }}</sui-card-description>
       </sui-card-content>
-      <sui-card-content>
+      <sui-card-content v-if="post.id">
         <span slot="right">
           <sui-icon v-bind:class="{ red: post.digged }" name="heart" v-on:click='digg' /> {{ post.digg }} likes
         </span>
@@ -22,14 +22,14 @@
 
     <sui-divider />
 
-    <scroller style="padding-top:50px;position:relative" :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
-      <sui-segment>
-        <div class="ui left icon action input fluid">
-          <i class="comments icon"></i>
-          <input type="text" placeholder="评论" v-model="comment" />
-          <div class="ui blue submit button" v-on:click='submit'>发布</div>
-        </div>
+    <div class="ui left icon action input fluid fixed">
+      <i class="comments icon"></i>
+      <input type="text" placeholder="评论" v-model="comment" />
+      <div class="ui blue submit button" v-on:click='submit'>发布</div>
+    </div>
 
+    <scroller style="position:relative" :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
+      <sui-segment v-if="total">
         <sui-comment-group>
           <sui-comment v-for="item in list" v-bind:item="item" v-bind:key="item.id">
             <sui-comment-avatar v-if="item.avatar" v-bind:src="item.avatar" />

@@ -1,15 +1,10 @@
 <template>
   <div>
     <sui-menu fixed="top">
-      <sui-menu-menu position="left">
-        <sui-menu-item left>
-          <a href='#/post_add'><i class="add icon"></i></a>
-        </sui-menu-item>
-      </sui-menu-menu>
     </sui-menu>
 
     <scroller style="padding-top:50px" :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
-      <sui-segment>
+      <sui-segment v-if="total">
         <sui-feed v-for="item in list" v-bind:item="item" v-bind:key="item.id">
           <sui-feed-event>
             <sui-feed-label>

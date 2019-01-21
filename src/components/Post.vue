@@ -1,9 +1,12 @@
 <template>
-  <div id="post">
+  <div>
     <sui-menu fixed="top">
       <sui-menu-menu position="left">
         <sui-menu-item left>
-          <a href='#/post_add'><i class="add icon"></i></a>
+          <a v-bind:href="'#/post_add?topic_id=' + topic_id"><i class="add icon"></i></a>
+        </sui-menu-item>
+        <sui-menu-item left>
+          {{topic_title}}
         </sui-menu-item>
       </sui-menu-menu>
 
@@ -53,6 +56,7 @@ export default {
       total: 0,
       keyword: '',
       topic_id: '',
+      topic_title: '',
       page: 1,
       pagesize: 5
     }
@@ -79,6 +83,7 @@ export default {
         if (res.status === 200) {
           if (res.data.state) {
             this.total = res.data.data.total
+            this.topic_title = res.data.data.topic_title ? res.data.data.topic_title : '最新帖子'
             if (this.page !== 1) {
               this.list = this.list.concat(res.data.data.list)
             } else {

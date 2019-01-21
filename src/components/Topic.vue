@@ -1,5 +1,5 @@
 <template>
-  <div id="topic">
+  <div>
     <sui-menu fixed="top">
       <sui-menu-menu position="left">
         <sui-menu-item left>
@@ -18,7 +18,7 @@
     </sui-menu>
 
     <scroller style="padding-top:50px" :on-refresh="refresh" :on-infinite="infinite" ref="my_scroller">
-      <sui-segment>
+      <sui-segment v-if="total">
         <sui-list divided relaxed>
           <sui-list-item v-for="item in list" v-bind:item="item" v-bind:key="item.id">
             <sui-list-content>

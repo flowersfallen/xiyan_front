@@ -21,7 +21,7 @@ export default new Vuex.Store({
       state.refresh_ttl = data.refresh_ttl
       // 缓存
       localStorage.xiyan_token = data.token
-      localStorage.xiyan_tll = data.ttl
+      localStorage.xiyan_ttl = data.ttl
       localStorage.xiyan_refresh = data.refresh_ttl
       // 头
       axios.defaults.headers.common['Authorization'] = 'bearer ' + data.token

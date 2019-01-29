@@ -9,7 +9,7 @@
       </sui-form-field>
       <sui-form-field>
         <label>大头像,详情展示,建议大小(600*600)</label>
-        <input type="file" accept="image/*" capture="camera" @change="getFile($event, 'big')">
+        <input type="file" accept="image/*" @change="getFile($event, 'big')">
       </sui-form-field>
       <sui-form-field>
         <sui-image v-if="user.avatar_big" v-bind:src="user.avatar_big" />

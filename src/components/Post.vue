@@ -5,9 +5,6 @@
         <sui-menu-item left>
           <a v-bind:href="'#/post_add?topic_id=' + topic_id"><i class="add icon"></i></a>
         </sui-menu-item>
-        <sui-menu-item left>
-          {{topic_title}}
-        </sui-menu-item>
       </sui-menu-menu>
 
       <sui-menu-menu position="right">

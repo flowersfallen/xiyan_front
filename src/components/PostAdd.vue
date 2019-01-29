@@ -11,7 +11,7 @@
         <textarea placeholder="帖子内容" v-model="content" ></textarea>
       </sui-form-field>
       <sui-form-field>
-        <input type="file" accept="image/*" capture="camera" @change="getFile($event)">
+        <input type="file" accept="image/*" @change="getFile($event)">
       </sui-form-field>
       <sui-form-field>
         <sui-image v-if="file" v-bind:src="file" />
@@ -91,7 +91,7 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           if (res.data.state) {
-            this.file = res.data.data.url
+            this.file = res.data.data.middle_url
           } else {
             this.$store.dispatch('setError', res.data.error)
           }

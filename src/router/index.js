@@ -11,7 +11,7 @@ import Register from '@/components/Register'
 import UserEdit from '@/components/UserEdit'
 import TopicAdd from '@/components/TopicAdd'
 import PostAdd from '@/components/PostAdd'
-
+import wx from 'weixin-js-sdk'
 import axios from 'axios'
 
 axios.interceptors.request.use(
@@ -56,6 +56,7 @@ axios.interceptors.response.use(
 )
 
 Vue.prototype.$ajax = axios
+Vue.prototype.$wx = wx
 
 Vue.use(Router)
 
